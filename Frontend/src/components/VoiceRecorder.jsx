@@ -4,7 +4,15 @@ const VoiceRecorder = () => {
     const [isRecording, setIsRecording] = useState(false);
     const [audioBlob, setAudioBlob] = useState(null);
     const mediaRecorderRef = useRef(null);
+    const [isSupported, setIsSupported] = useState(true);
 
+    /* As webspeech api doesn't run on safari/iphone devices */
+    useEffect(() => {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            setIsSupported(false);
+            console.warn("Voice recording not supported on this device/browser.");
+        }
+    }, []);
 
     const startRecording = async () => {
         /* navigator.mediaDevices is basically mic permission */
@@ -32,7 +40,9 @@ const VoiceRecorder = () => {
         setIsRecording(false)
         console.log("Stopping recording...")
     }
-
+    if (!isSupported) {
+        return <p>Your device does not support voice recording. Please use a supported browser like Chrome.</p>;
+    }
     return (
         <>
             <button onClick={startRecording}>Start Recording</button>
