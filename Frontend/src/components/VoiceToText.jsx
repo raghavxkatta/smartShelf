@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 
+/* This is basically to convert whatever the user says into text using  */
+
 const VoiceToText = () => {
     const [isListening, setIsListening] = useState(false);
     const [transcript, setTranscript] = useState('');
     const recognitionRef = useRef(null);
 
 
-    /*  */
+    /* Checking for browser support (Firefox and Safari don't support speech recognition using webSpeech API) */
     useEffect(() => {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
@@ -15,12 +17,15 @@ const VoiceToText = () => {
             return;
         }
 
+        /* Recogniser ki details fill in karna  */
         const recognition = new SpeechRecognition();
         recognition.lang = 'en-US';
+        /* ONly cares about the final result and not the inbetween words */
         recognition.interimResults = false;
         recognition.maxAlternatives = 1;
 
         recognition.onresult = (event) => {
+            /* [0][0] because the transcript would have multiple alternatives(guesses of what the user may have spoken) but we would pick only the top one */
             const text = event.results[0][0].transcript;
             setTranscript(text);
             console.log("Transcribed Text:", text);

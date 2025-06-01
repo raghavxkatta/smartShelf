@@ -7,7 +7,7 @@ const VoiceRecorder = () => {
     const [isSupported, setIsSupported] = useState(true);
 
     /* As webspeech api doesn't run on safari/iphone devices */
-    useEffect(() => {
+    useEffect(() => {   
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
             setIsSupported(false);
             console.warn("Voice recording not supported on this device/browser.");
