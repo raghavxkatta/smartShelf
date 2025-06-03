@@ -21,7 +21,7 @@ export const register = async (req, res) => {
         await newUser.save()
 
         const token = jwt.sign(
-            { id: newUser._id, email: newUser.email, role:newUser.role },
+            { id: newUser._id, email: newUser.email, role: newUser.role },
             process.env.JWT_SECRET,
             { expiresIn: '7d' }
         )
@@ -38,23 +38,35 @@ export const register = async (req, res) => {
     catch (error) {
         console.error(error)
         res.status(500).json({ message: "Server error" })
-    }  
+    }
 }
 
-export const login=async(req, res) => {
-    try{
-        const{email,password}=req.body
-        const user =await User.findOne({email})
-        if(!user){
-            return res.status(400).json({message:"User not found"})
+export const login = async (req, res) => {
+    try {
+        const { email, password } = req.body
+        const user = await User.findOne({ email })
+        if (!user) {
+            return res.status(400).json({ message: "User not found" })
         }
-        else{
-            const isMatch=await bcrypt.compare(password,user.password)
-            if(!isMatch){
-                return res.status(400).json({message:"Invalid credentials"})
-            }
 
+        const isMatch = await bcrypt.compare(password, user.password)
+        if (!isMatch) {
+            return res.status(400).json({ message: "Invalid credentials" })
         }
+        const token = jwt.sign(
+            { id: User._id, email: User.email, role: User.role },
+            process.env.JWT_SECRET,
+            { expiresIn: "7d" }
+        )
+        res.status(200).json({
+            token,
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email,
+                role: user.role
+            }
+        })
     }
     catch (error) {
         console.error(error)

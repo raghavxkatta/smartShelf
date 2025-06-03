@@ -1,7 +1,26 @@
 import { useState, useEffect, useRef } from 'react';
+import axios from 'axios'
 
-/* This is basically to convert whatever the user says into text using  */
+/* This is basically to convert whatever the user says into text to send transcript to AI  */
 
+const fetchNextQuestion = async (transcript) => {
+    try {
+        const res = await axios.post('https://localhost:5000/api/ask/ai',
+            { transcript },
+            {
+                headers: {
+                    Authorization: `Bearer ${yourToken}`
+                }
+            }
+
+        )
+
+    }
+    catch (err) {
+        console.error('AI fetch error', err)
+        return "Sorry couldn't generate a follow up"
+    }
+}
 const VoiceToText = () => {
     const [isListening, setIsListening] = useState(false);
     const [transcript, setTranscript] = useState('');
@@ -51,6 +70,8 @@ const VoiceToText = () => {
             setIsListening(false);
         }
     };
+
+
 
     return (
         <div className="p-4">
